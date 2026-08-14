@@ -4,9 +4,9 @@
 
 - GitHub: <https://github.com/Anyoungju/CODYSSEY2-3>
 - 프론트엔드 데모: <https://anyoungju.github.io/CODYSSEY2-3/>
-- AI API: `https://codyssey-compass.vercel.app/api/blueprint`
+- AI API 예정 주소: `https://codyssey-compass.vercel.app/api/blueprint`
 
-> GitHub Pages는 정적 프론트엔드를 제공하고 AI 요청은 Vercel Python API로 전달합니다. Vercel 프로젝트에는 `OPENAI_API_KEY`가 등록되어 있다고 가정합니다.
+> GitHub Pages는 정적 프론트엔드를 제공합니다. 프론트는 Vercel Python API를 호출하도록 구현되어 있지만, 2026-08-14 확인 시 위 예정 주소는 `DEPLOYMENT_NOT_FOUND`(404)였습니다. Vercel 프로젝트 연결과 환경변수 등록 후 운영 호출 증빙을 완료해야 합니다.
 
 ## 주요 기능
 
@@ -168,3 +168,4 @@ Vanilla JS는 빌드 과정과 의존성이 작아 이 MVP에 적합합니다. �
 - [운영·장애 대응 가이드](docs/OPERATIONS.md)
 - [구현 및 테스트 증빙](docs/EVIDENCE.md)
 - [네이토 사전평가 기록](docs/NAITO_PRECHECK.md)
+- [2차 평가 후속 검토](docs/POST_EVALUATION_REVIEW.md)
