@@ -10,6 +10,9 @@ from typing import Any
 MAX_BODY_BYTES = 8_192
 MAX_IDEA_LENGTH = 600
 MODEL = os.getenv("OPENAI_MODEL", "gpt-5.4-mini")
+ALLOWED_ORIGIN = os.getenv(
+    "ALLOWED_ORIGIN", "https://anyoungju.github.io"
+).rstrip("/")
 
 SYSTEM_PROMPT = """당신은 초보 개발자의 아이디어를 작고 검증 가능한 웹 서비스로 바꾸는 제품 코치입니다.
 한국어로 답하고, 과장 없이 Vanilla HTML/CSS/JavaScript 프론트엔드와 Python API로 40시간 안에 만들 수 있는 범위를 제안하세요.
@@ -70,8 +73,24 @@ class handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(encoded)))
         self.send_header("Cache-Control", "no-store")
+        request_origin = self.headers.get("Origin", "").rstrip("/")
+        if request_origin == ALLOWED_ORIGIN:
+            self.send_header("Access-Control-Allow-Origin", request_origin)
+            self.send_header("Vary", "Origin")
         self.end_headers()
         self.wfile.write(encoded)
+
+    def do_OPTIONS(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler contract
+        """Answer the GitHub Pages CORS preflight request."""
+        request_origin = self.headers.get("Origin", "").rstrip("/")
+        self.send_response(204)
+        if request_origin == ALLOWED_ORIGIN:
+            self.send_header("Access-Control-Allow-Origin", request_origin)
+            self.send_header("Vary", "Origin")
+        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "86400")
+        self.end_headers()
 
     def do_POST(self) -> None:  # noqa: N802 - BaseHTTPRequestHandler contract
         try:

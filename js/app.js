@@ -1,5 +1,11 @@
 const $ = (selector) => document.querySelector(selector);
 
+function getBlueprintEndpoint() {
+  const isGitHubPages = location.hostname.endsWith("github.io");
+  const productionUrl = document.querySelector('meta[name="compass-api-url"]')?.content;
+  return isGitHubPages && productionUrl ? productionUrl : "/api/blueprint";
+}
+
 const demoBlueprint = {
   service_name: "마음 한 칸",
   one_liner: "하루의 감정을 짧게 기록하고, 다음 생각을 여는 질문을 받는 감정 회고 서비스",
@@ -37,7 +43,7 @@ async function requestBlueprint(payload) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
   try {
-    const response = await fetch("/api/blueprint", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload), signal: controller.signal});
+    const response = await fetch(getBlueprintEndpoint(), {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload), signal: controller.signal});
     const body = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(body.error || "AI 설계 중 문제가 발생했습니다.");
     return body.blueprint;
