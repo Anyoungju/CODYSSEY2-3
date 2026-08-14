@@ -1,0 +1,13 @@
+[project]
+name = "codyssey-compass"
+version = "1.0.0"
+description = "AI project blueprint navigator for beginning web builders"
+requires-python = ">=3.12"
+dependencies = ["openai>=2.47.0,<3.0.0"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
