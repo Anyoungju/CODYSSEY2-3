@@ -218,7 +218,13 @@ def parse_args() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=DEFAULT_PORT)
-    parser.add_argument("--start", action="store_true", help="새 평가 시도를 시작합니다.")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--start", action="store_true", help="새 평가 시도를 시작합니다.")
+    mode.add_argument(
+        "--wait",
+        action="store_true",
+        help="이미 진행 중인 평가에 다시 연결해 완료까지 기다립니다.",
+    )
     parser.add_argument("--timeout", type=float, default=300)
     parser.add_argument("--poll", type=float, default=5)
     parser.add_argument("--output", type=Path, help="JSON 저장 경로(.md도 함께 생성)")
@@ -237,6 +243,12 @@ def main() -> int:
         open_dialog(client)
         if args.start:
             previous_tabs = start_attempt(client)
+            raw = wait_for_attempt(client, previous_tabs, args.timeout, args.poll)
+        elif args.wait:
+            current = snapshot(client)
+            if not any("⏳" in tab for tab in current.get("tabs", [])):
+                raise RuntimeError("진행 중인 네이토 평가를 찾지 못했습니다.")
+            previous_tabs = max(0, len(current.get("tabs", [])) - 1)
             raw = wait_for_attempt(client, previous_tabs, args.timeout, args.poll)
         else:
             raw = snapshot(client)
