@@ -27,6 +27,14 @@
 - 프롬프트 버전, 성능·비용 선택지를 기록했다.
 - `scripts/check_secrets.py`와 GitHub Actions 비밀 검사를 추가했다.
 
+## 시도 2
+
+- 평가 시각: 2026-08-14 17:41:33 KST
+- 결과: **100% (19/19 통과)**
+- 개선: 시도 1에서 실패한 #11, #12, #17, #18, #19가 모두 PASS로 전환됐다.
+
+추가 권고는 실제 Vercel/OpenAI 운영 호출 캡처, 다양한 뷰포트와 오류 UI 스냅샷, CI 실행 결과 등 증빙 강화다. 실제 운영 키와 로그를 확인할 수 있을 때 `docs/EVIDENCE.md`에 사실 기반 자료만 추가한다.
+
 ## 재평가 방법
 
 먼저 CDP Chrome과 자동로그인 세션을 연다.
@@ -40,4 +48,10 @@ python scripts/naito_precheck.py --output docs/naito/latest.json
 
 ```powershell
 python scripts/naito_precheck.py --start --timeout 300 --output docs/naito/attempt-2.json
+```
+
+대기 프로세스가 중단되어도 새 시도를 시작하지 말고 진행 중인 평가에 다시 연결한다.
+
+```powershell
+python scripts/naito_precheck.py --wait --timeout 300 --output docs/naito/attempt-2.json
 ```
