@@ -3,7 +3,10 @@
 막연한 웹 서비스 아이디어를 실행 가능한 MVP 청사진으로 바꾸는 AI 프로젝트 내비게이터입니다. Codyssey의 **AI 웹 개발: 내 아이디어를 현실로** 미션 결과물로 제작했습니다.
 
 - GitHub: <https://github.com/Anyoungju/codyssey-compass>
-- 배포 상태: Vercel 로그인과 `OPENAI_API_KEY` 등록 대기
+- 데모 페이지: <https://anyoungju.github.io/codyssey-compass/>
+- AI API: `https://codyssey-compass.vercel.app/api/blueprint`
+
+> GitHub Pages는 정적 프론트엔드를 제공하며, AI 생성 요청은 Vercel의 Python API로 전달됩니다. Vercel 프로젝트에는 `OPENAI_API_KEY`가 등록되어 있다고 가정합니다.
 
 ## 주요 기능
 
@@ -54,6 +57,7 @@ vercel dev
 ```dotenv
 OPENAI_API_KEY=your_openai_api_key
 OPENAI_MODEL=gpt-5.4-mini
+ALLOWED_ORIGIN=https://anyoungju.github.io
 ```
 
 API 키는 절대 Git에 커밋하지 않습니다. Vercel에서는 Project Settings → Environment Variables에 `OPENAI_API_KEY`를 등록한 뒤 다시 배포합니다.
@@ -68,7 +72,8 @@ python -m unittest discover -s tests -v
 
 GitHub 저장소를 Vercel에 Import한 뒤 환경변수를 등록하면 별도 빌드 설정 없이 정적 사이트와 `api/blueprint.py`가 함께 배포됩니다.
 
-- 배포 URL: Vercel 인증 및 `OPENAI_API_KEY` 등록 후 추가
+- 프론트엔드 데모: <https://anyoungju.github.io/codyssey-compass/>
+- Vercel API: <https://codyssey-compass.vercel.app/api/blueprint>
 - 상세 기획: [docs/SERVICE_PLAN.md](docs/SERVICE_PLAN.md)
 - 구현 증빙: [docs/EVIDENCE.md](docs/EVIDENCE.md)
 
