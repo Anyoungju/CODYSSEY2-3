@@ -56,6 +56,21 @@ def save_screenshot(client: CDPClient, name: str) -> None:
     (SCREENSHOT_DIR / name).write_bytes(base64.b64decode(result["data"]))
 
 
+def set_viewport(client: CDPClient, width: int, height: int, *, mobile: bool) -> None:
+    """Apply a reproducible browser viewport for visual evidence."""
+    client.call(
+        "Emulation.setDeviceMetricsOverride",
+        {
+            "width": width,
+            "height": height,
+            "deviceScaleFactor": 1,
+            "mobile": mobile,
+        },
+    )
+    client.evaluate("scrollTo(0, 0); true")
+    time.sleep(0.3)
+
+
 def main() -> None:
     """Serve the app, capture desktop/mobile/result views, and clean up."""
     SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
@@ -71,28 +86,40 @@ def main() -> None:
         wait_until(client, "document.readyState === 'complete'")
         time.sleep(1)
 
-        client.call(
-            "Emulation.setDeviceMetricsOverride",
-            {"width": 1440, "height": 1000, "deviceScaleFactor": 1, "mobile": False},
-        )
-        client.evaluate("scrollTo(0, 0); true")
-        time.sleep(0.3)
+        set_viewport(client, 1440, 1000, mobile=False)
         save_screenshot(client, "desktop.png")
 
-        client.call(
-            "Emulation.setDeviceMetricsOverride",
-            {"width": 390, "height": 844, "deviceScaleFactor": 1, "mobile": True},
-        )
-        client.evaluate("scrollTo(0, 0); true")
-        time.sleep(0.3)
+        set_viewport(client, 390, 844, mobile=True)
         save_screenshot(client, "mobile.png")
 
-        client.call(
-            "Emulation.setDeviceMetricsOverride",
-            {"width": 1440, "height": 1000, "deviceScaleFactor": 1, "mobile": False},
-        )
+        set_viewport(client, 844, 390, mobile=True)
+        save_screenshot(client, "tablet-landscape.png")
+
+        set_viewport(client, 390, 844, mobile=True)
         client.evaluate(
-            "document.querySelector('#blueprint-form').requestSubmit(); true"
+            """(() => {
+              const form = document.querySelector('#blueprint-form');
+              const idea = document.querySelector('#idea');
+              idea.value = '';
+              idea.dispatchEvent(new Event('input', {bubbles: true}));
+              form.requestSubmit();
+              form.classList.add('visible');
+              const top = form.getBoundingClientRect().top + scrollY - 76;
+              scrollTo({top, behavior: 'instant'});
+              return true;
+            })()"""
+        )
+        wait_until(client, "document.querySelector('#idea-error').textContent.length > 0")
+        time.sleep(0.8)
+        save_screenshot(client, "validation-error.png")
+
+        set_viewport(client, 1440, 1000, mobile=False)
+        client.evaluate(
+            """(() => {
+              document.querySelector('#idea').value = '감정을 기록하면 회고 질문을 제안하는 서비스';
+              document.querySelector('#blueprint-form').requestSubmit();
+              return true;
+            })()"""
         )
         wait_until(client, "!document.querySelector('#result').hidden")
         time.sleep(1)

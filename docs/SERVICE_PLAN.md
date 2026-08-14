@@ -45,6 +45,14 @@ idle → validating → loading → success
 
 폼 버튼과 상태 문구는 이 상태를 공유한다. `loading` 동안 중복 제출을 막고, 나머지 상태에서는 입력값을 유지한다.
 
+| 상태 | `js/app.js` 구현 | 사용자 결과 |
+| --- | --- | --- |
+| validating | `idea.value.trim()` 검사 | 빈 입력 안내 후 입력창 포커스 |
+| loading | `button.disabled`, `.loading`, `AbortController` | 중복 제출 차단과 진행 문구 |
+| success | `renderBlueprint()` | 결과 카드 표시 |
+| server-error | `response.ok`와 응답 `error` 확인 | 입력 보존, 서버 메시지 표시 |
+| timeout | 20초 타이머와 `controller.abort()` | 재시도 안내, 버튼 복구 |
+
 ## 6. 환경과 보안
 
 - 로컬: `.env` 또는 `vercel dev`로 개발 키를 사용한다.
