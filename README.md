@@ -2,6 +2,9 @@
 
 막연한 웹 서비스 아이디어를 실행 가능한 MVP 청사진으로 바꾸는 AI 프로젝트 내비게이터입니다. Codyssey의 **AI 웹 개발: 내 아이디어를 현실로** 미션 결과물로 제작했습니다.
 
+- GitHub: <https://github.com/Anyoungju/codyssey-compass>
+- 배포 상태: Vercel 로그인과 `OPENAI_API_KEY` 등록 대기
+
 ## 주요 기능
 
 - 아이디어, 대상 사용자, 우선 조건을 바탕으로 AI 프로젝트 청사진 생성
